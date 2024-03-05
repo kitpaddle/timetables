@@ -675,11 +675,12 @@ let resrobotKey =  '8e4ebd51-b764-4f5f-8e48-12cdec7b2945'; // 25000 per month
 let idTorsplan = '740046074';
 let idNorraSt = '740046187';
 let idOdenplan = '';
-let idT4 = '';
+let idT4 = '740033206';
 let idArlanda = '';
 
 getData(idTorsplan, "stop1");
 getData(idNorraSt, "stop2");
+getData(idT4, "stop3");
 
 // Get the timetables data from free API at trafiklab.se
 function getData(id,divelement){
@@ -699,17 +700,26 @@ function getData(id,divelement){
 }
 
 //Formats string of date YYYY-MM-DD to MM/DD
-function formatDate(inputDate) {
-    let parts = inputDate.split("-");
-    let formattedDate = parts[1] + "/" + parts[2];
-    return formattedDate;
+  function testStopString(s) {
+  if (/Arlanda.*2|2.*Arlanda/.test(s)){
+    return "Arlanda T2 & T3";
+  }
+  else if(/Arlanda.*4|4.*Arlanda/.test(s)){
+    return "Arlanda T4";
+  }
+    else if(/Norra Stationsgatan/.test(s)){
+      return "Norra Stationsgatan";
+    }
+  else{
+    return s.split(' ')[0];
+  }
 }
 
 //Creates one new timetable box for a stop from the data
 function addTimetable(stopData, divelement){
   console.log("Departures feteched: "+stopData.Departure.length);
   let html='';
-  html += '<div class="namerow">'+stopData.Departure[0].stop.split(' ')[0]+'</div>';
+  html += '<div class="namerow">'+testStopString(stopData.Departure[0].stop)+'</div>';
   html += '<div class="tablerow defrow"><div>Time</div><div>Destination</div><div>Line</div></div>';
   
   for (let i = 0; i < 10; i++) {
